@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>United Fire - Backflow Test Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#1a1a2e;color:#e0e0e0;min-height:100vh}
+header{background:linear-gradient(135deg,#c0392b,#7f1d1d);padding:16px 24px}
+header h1{font-size:1.3rem;color:#fff;font-weight:700}
+header p{font-size:.78rem;color:#fca5a5;margin-top:2px}
+.container{max-width:960px;margin:0 auto;padding:20px}
+.card{background:#16213e;border:1px solid #0f3460;border-radius:10px;padding:20px;margin-bottom:18px}
+.card h2{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#e74c3c;border-bottom:1px solid #0f3460;padding-bottom:8px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:.75rem;color:#94a3b8;display:block;margin-bottom:4px}
+input[type=text],input[type=date],textarea{width:100%;padding:8px 10px;background:#0f3460;border:1px solid #1e4d8c;border-radius:6px;color:#e0e0e0;font-size:.85rem;outline:none;transition:border .2s}
+input:focus,textarea:focus{border-color:#e74c3c}
+textarea{resize:vertical;min-height:60px}
+.section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;color:#64748b;margin-bottom:8px;letter-spacing:.5px}
+.checkbox-group{display:flex;flex-direction:column;gap:7px}
+.checkbox-row{display:flex;align-items:center;gap:8px;font-size:.82rem;cursor:pointer;color:#e0e0e0}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;accent-color:#e74c3c;cursor:pointer;flex-shrink:0}
+.inline-val{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.inline-val input[type=text]{width:70px!important;flex-shrink:0}
+.testing-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:700px){.testing-grid{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.testing-grid{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}}
+.col-header{font-size:.75rem;font-weight:700;color:#fff;text-transform:uppercase;background:#c0392b;padding:5px 8px;border-radius:4px;margin-bottom:10px;text-align:center}
+.pass-fail{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.pass-fail label{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:700;cursor:pointer;color:#e0e0e0}
+.pass-fail input[type=radio]{width:18px;height:18px;accent-color:#e74c3c}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+button{padding:10px 22px;border:none;border-radius:7px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-primary{background:#e74c3c;color:#fff}
+.btn-primary:hover{background:#c0392b}
+.btn-secondary{background:#0f3460;color:#e0e0e0;border:1px solid #1e4d8c}
+.btn-secondary:hover{background:#1e4d8c}
+.btn-clear{background:#374151;color:#e0e0e0}
+.btn-clear:hover{background:#4b5563}
+#toast{position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;padding:12px 20px;border-radius:8px;font-size:.85rem;font-weight:600;display:none;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.repairs-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.type-radio{display:flex;gap:14px;flex-wrap:wrap}
+.type-radio label{display:flex;align-items:center;gap:5px;font-size:.82rem;cursor:pointer;color:#e0e0e0}
+.type-radio input{width:15px;height:15px;accent-color:#e74c3c}
+.service-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px}
+.divider{border:none;border-top:1px solid #0f3460;margin:12px 0}
+.tester-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:560px){.tester-grid{grid-template-columns:1fr 1fr}}
+.sub-label{font-size:.7rem;color:#64748b;font-weight:700;text-transform:uppercase;margin:8px 0 4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>&#128293; United Fire &ndash; Backflow Test Report</h1>
+  <p>Backflow Preventer Assembly Test and Maintenance Report</p>
+</header>
+<div class="container">
+
+<div class="card">
+  <h2>Report Header</h2>
+  <div class="grid-3">
+    <div><label>Date</label><input type="date" id="f_date"></div>
+    <div><label>Branch</label><input type="text" id="f_branch" placeholder="e.g. Orlando"></div>
+    <div><label>Authority Having Jurisdiction</label><input type="text" id="f_ahj" placeholder="AHJ Name"></div>
+  </div>
+  <div style="margin-top:12px" class="grid-2">
+    <div><label>Customer / Site Name</label><input type="text" id="f_customer" placeholder="Customer or site name"></div>
+    <div><label>Street Address</label><input type="text" id="f_address" placeholder="Street address"></div>
+  </div>
+  <div style="margin-top:12px">
+    <label>Location of Assembly</label>
+    <input type="text" id="f_location" placeholder="e.g. Mechanical room, 2nd floor">
+  </div>
+</div>
+
+<div class="card">
+  <h2>Backflow Information</h2>
+  <div class="grid">
+    <div><label>Serial Number</label><input type="text" id="f_serial" placeholder="Serial #"></div>
+    <div><label>Manufacturer</label><input type="text" id="f_manufacturer" placeholder="e.g. Watts"></div>
+    <div><label>Model</label><input type="text" id="f_model" placeholder="Model #"></div>
+    <div><label>Size</label><input type="text" id="f_size" placeholder="e.g. 3/4 inch"></div>
+  </div>
+  <hr class="divider">
+  <div class="grid-2" style="margin-top:8px">
+    <div>
+      <div class="section-title">Type of Assembly</div>
+      <div class="type-radio">
+        <label><input type="radio" name="assembly_type" value="RP"> RP</label>
+        <label><input type="radio" name="assembly_type" value="DC"> DC</label>
+        <label><input type="radio" name="assembly_type" value="PVB"> PVB</label>
+        <label><input type="radio" name="assembly_type" value="SVB"> SVB</label>
+      </div>
+    </div>
+    <div>
+      <div class="section-title">System Service</div>
+      <div class="service-grid">
+        <label class="checkbox-row"><input type="checkbox" id="ss_fire"> Fire</label>
+        <label class="checkbox-row"><input type="checkbox" id="ss_domestic"> Domestic</label>
+        <label class="checkbox-row"><input type="checkbox" id="ss_irrigation"> Irrigation</label>
+        <label class="checkbox-row"><input type="checkbox" id="ss_attraction"> Attraction</label>
+      </div>
+    </div>
+  </div>
+  <hr class="divider">
+  <div>
+    <div class="section-title">Bypass?</div>
+    <div class="type-radio">
+      <label><input type="radio" name="bypass" value="YES"> Yes</label>
+      <label><input type="radio" name="bypass" value="NO"> No</label>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Testing Information</h2>
+  <div class="testing-grid">
+    <div>
+      <div class="col-header">Check Valve #1</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="cv1_closed"> Closed Tight</label>
+        <label class="checkbox-row"><input type="checkbox" id="cv1_leaked"> Leaked</label>
+        <label class="checkbox-row"><input type="checkbox" id="cv1_na"> N/A</label>
+      </div>
+      <div style="margin-top:10px">
+        <label>Differential Pressure Across CV1 (PSI)</label>
+        <input type="text" id="cv1_dp" placeholder="PSI">
+      </div>
+    </div>
+    <div>
+      <div class="col-header">Relief Valve</div>
+      <div class="checkbox-group">
+        <div class="inline-val">
+          <label class="checkbox-row"><input type="checkbox" id="rv_opened"> Opened At</label>
+          <input type="text" id="rv_psi" placeholder="PSI">
+        </div>
+        <label class="checkbox-row"><input type="checkbox" id="rv_didnotopen"> Did Not Open</label>
+        <label class="checkbox-row"><input type="checkbox" id="rv_na"> N/A</label>
+      </div>
+      <div class="sub-label">Outlet Shut-Off Valve</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="rv_out_closed"> Closed</label>
+        <label class="checkbox-row"><input type="checkbox" id="rv_out_leaked"> Leaked</label>
+      </div>
+      <div class="sub-label">Inlet Shut-Off Valve</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="rv_in_closed"> Closed</label>
+        <label class="checkbox-row"><input type="checkbox" id="rv_in_leaked"> Leaked</label>
+      </div>
+    </div>
+    <div>
+      <div class="col-header">Check Valve #2</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="cv2_closed"> Closed Tight</label>
+        <label class="checkbox-row"><input type="checkbox" id="cv2_leaked"> Leaked</label>
+        <label class="checkbox-row"><input type="checkbox" id="cv2_na"> N/A</label>
+      </div>
+      <div style="margin-top:10px">
+        <label>Optional Test - Diff. Pressure Across CV2 (PSI)</label>
+        <input type="text" id="cv2_dp" placeholder="PSI">
+      </div>
+    </div>
+    <div>
+      <div class="col-header">PVB or SVB</div>
+      <div class="sub-label" style="margin-top:0">Air Inlet</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="pvb_ai_closed"> Closed Tight</label>
+        <div class="inline-val">
+          <label class="checkbox-row"><input type="checkbox" id="pvb_ai_opened"> Opened At</label>
+          <input type="text" id="pvb_ai_psi" placeholder="PSI">
+        </div>
+      </div>
+      <div class="sub-label">Check Valve</div>
+      <div class="checkbox-group">
+        <label class="checkbox-row"><input type="checkbox" id="pvb_cv_leaked"> Leaked</label>
+        <div class="inline-val">
+          <label class="checkbox-row"><input type="checkbox" id="pvb_cv_held"> Held At</label>
+          <input type="text" id="pvb_cv_psi" placeholder="PSI">
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="grid-2" style="align-items:center">
+    <div><label>Test Date</label><input type="date" id="f_test_date"></div>
+    <div>
+      <div class="section-title" style="margin-bottom:8px">This Assembly</div>
+      <div class="pass-fail">
+        <label><input type="radio" name="assembly_result" value="PASSED"> &#9989; PASSED</label>
+        <label><input type="radio" name="assembly_result" value="FAILED"> &#10060; FAILED</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Repairs</h2>
+  <div>
+    <label>Description of Repairs (including Part #)</label>
+    <textarea id="f_repair_desc" placeholder="Describe any repairs performed including part numbers..."></textarea>
+  </div>
+  <div style="margin-top:12px">
+    <div class="section-title">Repair Items</div>
+    <div class="repairs-grid">
+      <label class="checkbox-row"><input type="checkbox" id="rep_cva"> Check Valve Assembly</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_flush"> Flush &amp; Remove Debris</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_rva"> Relief Valve Assembly</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_clean"> Clean Internal</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_aiva"> Air Inlet Valve Assembly</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_osy"> OS&amp;Y Repair</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_rubber"> Rubber Repair Kit</label>
+      <label class="checkbox-row"><input type="checkbox" id="rep_repack"> Re-Packing</label>
+      <label class="checkbox-row" style="grid-column:1/-1"><input type="checkbox" id="rep_new"> New Backflow</label>
+    </div>
+  </div>
+  <div style="margin-top:12px">
+    <label>Remarks / Repairs Needed</label>
+    <textarea id="f_remarks" placeholder="Any additional remarks or repairs needed..."></textarea>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Tester Information</h2>
+  <div class="tester-grid">
+    <div><label>Gauge Manufacturer</label><input type="text" id="f_gauge_mfg" placeholder="Manufacturer"></div>
+    <div><label>Serial #</label><input type="text" id="f_gauge_serial" placeholder="Serial #"></div>
+    <div><label>Date Calibrated</label><input type="date" id="f_date_cal"></div>
+    <div><label>Certification No.</label><input type="text" id="f_cert_no" placeholder="Cert #"></div>
+    <div><label>Technician</label><input type="text" id="f_tech" placeholder="Full name"></div>
+    <div><label>Re-Cert Due Date</label><input type="date" id="f_recert"></div>
+  </div>
+</div>
+
+<div class="btn-row" style="margin-bottom:40px">
+  <button class="btn-primary" onclick="generatePDF()">&#128196; Save as Flat PDF</button>
+  <button class="btn-secondary" onclick="saveSession()">&#128190; Save Session</button>
+  <button class="btn-secondary" onclick="loadSession()">&#128194; Load Session</button>
+  <button class="btn-clear" onclick="clearForm()">&#128465; Clear Form</button>
+</div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+const STICKY=['f_branch','f_ahj','f_gauge_mfg','f_gauge_serial','f_date_cal','f_cert_no','f_tech','f_recert'];
+
+function toast(msg,color){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.style.background=color||'#22c55e';t.style.display='block';
+  setTimeout(function(){t.style.display='none'},3200);
+}
+
+function getFormData(){
+  var d={};
+  document.querySelectorAll('input[type="text"],input[type="date"],textarea').forEach(function(el){d[el.id]=el.value});
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el){d[el.id]=el.checked});
+  ['assembly_type','bypass','assembly_result'].forEach(function(name){
+    var r=document.querySelector('input[name="'+name+'"]:checked');
+    d[name]=r?r.value:'';
+  });
+  return d;
+}
+
+function setFormData(d){
+  Object.entries(d).forEach(function(e){
+    var el=document.getElementById(e[0]);
+    if(el){if(el.type==='checkbox')el.checked=!!e[1];else el.value=e[1]||'';}
+  });
+  ['assembly_type','bypass','assembly_result'].forEach(function(name){
+    if(d[name]){var r=document.querySelector('input[name="'+name+'"][value="'+d[name]+'"]');if(r)r.checked=true;}
+  });
+}
+
+function saveSession(){localStorage.setItem('uf_session',JSON.stringify(getFormData()));toast('Session saved!');}
+
+function loadSession(){
+  var raw=localStorage.getItem('uf_session');
+  if(!raw){toast('No saved session found.','#ef4444');return;}
+  setFormData(JSON.parse(raw));toast('Session loaded!');
+}
+
+function clearForm(){
+  if(!confirm('Clear job-specific fields? Tester/Branch info will be kept.'))return;
+  var prev=getFormData();
+  document.querySelectorAll('input[type="text"],input[type="date"],textarea').forEach(function(el){el.value='';});
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el){el.checked=false;});
+  document.querySelectorAll('input[type="radio"]').forEach(function(el){el.checked=false;});
+  var kept={};STICKY.forEach(function(k){kept[k]=prev[k];});
+  setFormData(kept);
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('f_date').value=today;
+  document.getElementById('f_test_date').value=today;
+  toast('Form cleared - sticky fields kept.','#f59e0b');
+}
+
+STICKY.forEach(function(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener('change',function(){
+    var s=JSON.parse(localStorage.getItem('uf_sticky')||'{}');
+    s[id]=el.value;localStorage.setItem('uf_sticky',JSON.stringify(s));
+  });
+});
+
+window.addEventListener('DOMContentLoaded',function(){
+  var sticky=JSON.parse(localStorage.getItem('uf_sticky')||'{}');
+  STICKY.forEach(function(id){var el=document.getElementById(id);if(el&&sticky[id])el.value=sticky[id];});
+  var today=new Date().toISOString().split('T')[0];
+  var fd=document.getElementById('f_date');if(fd&&!fd.value)fd.value=today;
+  var ftd=document.getElementById('f_test_date');if(ftd&&!ftd.value)ftd.value=today;
+});
+
+function generatePDF(){
+  if(typeof window.jspdf==='undefined'){toast('PDF library loading... try again in a moment.','#f59e0b');return;}
+  var jsPDF=window.jspdf.jsPDF;
+  var d=getFormData();
+  var customer=(d.f_customer||'Customer').trim().replace(/[\/\\:*?"<>|]/g,'_');
+  var address=(d.f_address||'Address').trim().replace(/[\/\\:*?"<>|]/g,'_');
+  var filename=customer+' - '+address+'.pdf';
+  var doc=new jsPDF({orientation:'portrait',unit:'mm',format:'letter'});
+  var PW=215.9,M=12,y=M;
+  var R=[192,57,43],BK=[20,20,20],GR=[100,100,100],LG=[235,235,235],WH=[255,255,255];
+
+  function sf(s,c,w){doc.setFontSize(s);doc.setTextColor.apply(doc,c||BK);doc.setFont('helvetica',w||'normal');}
+  function tx(str,x,yy,s,c,w,a){sf(s||8,c||BK,w||'normal');doc.text(String(str||''),x,yy,{align:a||'left'});}
+  function hl(yy){doc.setDrawColor.apply(doc,GR);doc.setLineWidth(0.25);doc.line(M,yy,PW-M,yy);}
+  function fillRect(x,yy,w,h,fc){doc.setFillColor.apply(doc,fc);doc.rect(x,yy,w,h,'F');}
+  function outRect(x,yy,w,h){doc.setDrawColor.apply(doc,GR);doc.setLineWidth(0.25);doc.rect(x,yy,w,h,'S');}
+  function cb(checked,x,yy){
+    doc.setDrawColor.apply(doc,BK);doc.setLineWidth(0.35);
+    doc.rect(x,yy-3,3.2,3.2);
+    if(checked){doc.setDrawColor.apply(doc,R);doc.setLineWidth(0.7);doc.line(x,yy-3,x+3.2,yy+0.2);doc.line(x+3.2,yy-3,x,yy+0.2);}
+  }
+  function ul(lbl,val,lx,vx,yy,vw){
+    tx(lbl,lx,yy,7,GR,'bold');
+    doc.setDrawColor.apply(doc,GR);doc.setLineWidth(0.2);doc.line(vx,yy+0.6,vx+(vw||55),yy+0.6);
+    tx(val,vx,yy,7.5);
+  }
+
+  fillRect(M,y,PW-2*M,11,R);tx('UNITED FIRE',PW/2,y+7.5,16,WH,'bold','center');y+=13;
+  tx('PROVIDING WORLD CLASS SERVICE',PW/2,y,9,R,'bold','center');y+=4.5;
+  tx('BACKFLOW PREVENTER ASSEMBLY TEST AND MAINTENANCE REPORT',PW/2,y,7.5,GR,'bold','center');
+  y+=5;hl(y);y+=4;
+
+  tx('DATE:',M,y,7.5,GR,'bold');tx(d.f_date||'',M+11,y,7.5);
+  tx('BRANCH:',M+52,y,7.5,GR,'bold');tx(d.f_branch||'',M+66,y,7.5);
+  tx('AUTHORITY HAVING JURISDICTION:',M+105,y,7.5,GR,'bold');tx(d.f_ahj||'',M+158,y,7.5);
+  y+=6;ul('CUSTOMER / SITE NAME:',d.f_customer,M,M+42,y,120);
+  y+=6;ul('STREET ADDRESS:',d.f_address,M,M+33,y,125);
+  y+=6;ul('LOCATION OF ASSEMBLY:',d.f_location,M,M+42,y,120);
+  y+=7;hl(y);y+=2;
+
+  var bfH=40;fillRect(M,y,6,bfH,[220,220,220]);
+  doc.setFontSize(6);doc.setTextColor.apply(doc,GR);doc.setFont('helvetica','bold');
+  doc.text('BACKFLOW INFORMATION',M+3,y+bfH-1,{angle:90,align:'right'});
+  var bxx=M+8;
+  ul('SERIAL NUMBER:',d.f_serial,bxx,bxx+28,y+6,52);
+  ul('MANUFACTURER:',d.f_manufacturer,bxx,bxx+28,y+12,52);
+  ul('MODEL:',d.f_model,bxx,bxx+14,y+18,52);
+  tx('SIZE:',bxx+98,y+6,7,GR,'bold');tx(d.f_size||'',bxx+108,y+6,7.5);
+  tx('SYSTEM SERVICE:',bxx+88,y+12,6.5,GR,'bold');
+  cb(d.ss_fire,bxx+88,y+19);tx('FIRE',bxx+93,y+19,6.5);
+  cb(d.ss_domestic,bxx+88,y+24);tx('DOMESTIC',bxx+93,y+24,6.5);
+  cb(d.ss_irrigation,bxx+88,y+29);tx('IRRIGATION',bxx+93,y+29,6.5);
+  cb(d.ss_attraction,bxx+88,y+34);tx('ATTRACTION',bxx+93,y+34,6.5);
+  tx('BYPASS?',bxx+133,y+12,6.5,GR,'bold');
+  cb(d.bypass==='YES',bxx+133,y+20);tx('YES',bxx+138,y+20,6.5);
+  cb(d.bypass==='NO',bxx+133,y+27);tx('NO',bxx+138,y+27,6.5);
+  tx('TYPE OF ASSEMBLY:',bxx,y+26,6.5,GR,'bold');
+  cb(d.assembly_type==='RP',bxx,y+33);tx('RP',bxx+5,y+33,6.5);
+  cb(d.assembly_type==='DC',bxx+18,y+33);tx('DC',bxx+23,y+33,6.5);
+  cb(d.assembly_type==='PVB',bxx,y+39);tx('PVB',bxx+5,y+39,6.5);
+  cb(d.assembly_type==='SVB',bxx+18,y+39);tx('SVB',bxx+23,y+39,6.5);
+  y+=bfH+3;hl(y);y+=2;
+
+  var tiH=58,colW=(PW-2*M-6)/4;
+  var cols=[M+6,M+6+colW,M+6+colW*2,M+6+colW*3];
+  fillRect(M,y,6,tiH,[220,220,220]);
+  doc.setFontSize(6);doc.setTextColor.apply(doc,GR);doc.setFont('helvetica','bold');
+  doc.text('TESTING INFORMATION',M+3,y+tiH-1,{angle:90,align:'right'});
+  var hdr=['CHECK VALVE #1','RELIEF VALVE','CHECK VALVE #2','PVB or SVB'];
+  hdr.forEach(function(h,i){fillRect(cols[i],y,colW-1,6,R);tx(h,cols[i]+(colW-1)/2,y+4.5,6,WH,'bold','center');});
+  var row=y+9;
+  cb(d.cv1_closed,cols[0],row);tx('Closed Tight',cols[0]+5,row,6.5);row+=5;
+  cb(d.cv1_leaked,cols[0],row);tx('Leaked',cols[0]+5,row,6.5);row+=5;
+  cb(d.cv1_na,cols[0],row);tx('N/A',cols[0]+5,row,6.5);row+=5;
+  tx('DP CV1:',cols[0],row,6,GR,'bold');tx(d.cv1_dp||'',cols[0]+13,row,6.5);tx('PSI',cols[0]+24,row,6,GR);
+  var rrow=y+9;
+  cb(d.rv_opened,cols[1],rrow);tx('Opened At',cols[1]+5,rrow,6.5);tx(d.rv_psi||'',cols[1]+25,rrow,6.5);tx('PSI',cols[1]+35,rrow,6,GR);rrow+=5;
+  cb(d.rv_didnotopen,cols[1],rrow);tx('Did Not Open',cols[1]+5,rrow,6.5);rrow+=5;
+  cb(d.rv_na,cols[1],rrow);tx('N/A',cols[1]+5,rrow,6.5);rrow+=5;
+  tx('Outlet S/O:',cols[1],rrow,5.5,GR,'bold');rrow+=4;
+  cb(d.rv_out_closed,cols[1],rrow);tx('Closed',cols[1]+5,rrow,6.5);cb(d.rv_out_leaked,cols[1]+18,rrow);tx('Leaked',cols[1]+23,rrow,6.5);rrow+=5;
+  tx('Inlet S/O:',cols[1],rrow,5.5,GR,'bold');rrow+=4;
+  cb(d.rv_in_closed,cols[1],rrow);tx('Closed',cols[1]+5,rrow,6.5);cb(d.rv_in_leaked,cols[1]+18,rrow);tx('Leaked',cols[1]+23,rrow,6.5);
+  var crow=y+9;
+  cb(d.cv2_closed,cols[2],crow);tx('Closed Tight',cols[2]+5,crow,6.5);crow+=5;
+  cb(d.cv2_leaked,cols[2],crow);tx('Leaked',cols[2]+5,crow,6.5);crow+=5;
+  cb(d.cv2_na,cols[2],crow);tx('N/A',cols[2]+5,crow,6.5);crow+=5;
+  tx('Opt DP CV2:',cols[2],crow,5.5,GR,'bold');crow+=4;tx(d.cv2_dp||'',cols[2],crow,6.5);tx('PSI',cols[2]+10,crow,6,GR);
+  var prow=y+9;
+  tx('Air Inlet:',cols[3],prow,5.5,GR,'bold');prow+=4;
+  cb(d.pvb_ai_closed,cols[3],prow);tx('Closed Tight',cols[3]+5,prow,6.5);prow+=5;
+  cb(d.pvb_ai_opened,cols[3],prow);tx('Opened At',cols[3]+5,prow,6.5);tx(d.pvb_ai_psi||'',cols[3]+24,prow,6.5);tx('PSI',cols[3]+32,prow,6,GR);prow+=6;
+  tx('Chk Valve:',cols[3],prow,5.5,GR,'bold');prow+=4;
+  cb(d.pvb_cv_leaked,cols[3],prow);tx('Leaked',cols[3]+5,prow,6.5);prow+=5;
+  cb(d.pvb_cv_held,cols[3],prow);tx('Held At',cols[3]+5,prow,6.5);tx(d.pvb_cv_psi||'',cols[3]+22,prow,6.5);tx('PSI',cols[3]+30,prow,6,GR);
+  y+=tiH+2;
+  fillRect(M,y,PW-2*M,8,LG);
+  tx('TEST DATE:',M+2,y+5.5,7,GR,'bold');tx(d.f_test_date||'',M+20,y+5.5,7.5);
+  tx('THIS ASSEMBLY:',M+88,y+5.5,7,GR,'bold');
+  cb(d.assembly_result==='PASSED',M+116,y+5.5);tx('PASSED',M+121,y+5.5,8.5,d.assembly_result==='PASSED'?[0,140,0]:BK,'bold');
+  cb(d.assembly_result==='FAILED',M+148,y+5.5);tx('FAILED',M+153,y+5.5,8.5,d.assembly_result==='FAILED'?R:BK,'bold');
+  y+=10;hl(y);y+=2;
+
+  var repH=50;fillRect(M,y,6,repH,[220,220,220]);
+  doc.setFontSize(6);doc.setTextColor.apply(doc,GR);doc.setFont('helvetica','bold');
+  doc.text('REPAIRS',M+3,y+repH-2,{angle:90,align:'right'});
+  var rxx=M+8;
+  tx('DESCRIPTION OF REPAIRS (INCLUDING PART #):',rxx,y+4,6.5,GR,'bold');
+  outRect(rxx,y+5,PW-rxx-M,10);
+  var repDesc=doc.splitTextToSize(d.f_repair_desc||'',PW-rxx-M-2);
+  tx(repDesc.slice(0,2).join(' '),rxx+1,y+9.5,6.5);
+  var repItems=[
+    ['rep_cva','Check Valve Assembly','rep_flush','Flush & Remove Debris'],
+    ['rep_rva','Relief Valve Assembly','rep_clean','Clean Internal'],
+    ['rep_aiva','Air Inlet Valve Assy','rep_osy','OS&Y Repair'],
+    ['rep_rubber','Rubber Repair Kit','rep_repack','Re-Packing']
+  ];
+  var ry2=y+18;
+  repItems.forEach(function(row2){
+    cb(d[row2[0]],rxx,ry2);tx(row2[1],rxx+5,ry2,6.5);
+    cb(d[row2[2]],rxx+80,ry2);tx(row2[3],rxx+85,ry2,6.5);
+    ry2+=5;
+  });
+  cb(d.rep_new,rxx+155,y+18);tx('New Backflow',rxx+160,y+18,6.5);
+  y+=repH+1;
+  tx('PLEASE NOTE: ALL REPAIRS SHALL BE COMPLETED UPON CUSTOMER APPROVAL.',rxx,y,6,GR,'bold');y+=4;
+  tx('REMARKS / REPAIRS NEEDED:',rxx,y,6.5,GR,'bold');
+  outRect(rxx,y+1,PW-rxx-M,10);
+  var rem=doc.splitTextToSize(d.f_remarks||'',PW-rxx-M-2);
+  tx(rem.slice(0,2).join(' '),rxx+1,y+5.5,6.5);
+  y+=14;hl(y);y+=3;
+
+  fillRect(M,y,6,16,[220,220,220]);
+  doc.setFontSize(6);doc.setTextColor.apply(doc,GR);doc.setFont('helvetica','bold');
+  doc.text('TESTER',M+3,y+14,{angle:90,align:'right'});
+  var txx=M+8;
+  tx('GAUGE MFG:',txx,y+5,6.5,GR,'bold');tx(d.f_gauge_mfg||'',txx+18,y+5,7);
+  tx('SERIAL #:',txx+60,y+5,6.5,GR,'bold');tx(d.f_gauge_serial||'',txx+76,y+5,7);
+  tx('DATE CALIBRATED:',txx+110,y+5,6.5,GR,'bold');tx(d.f_date_cal||'',txx+140,y+5,7);
+  tx('TECHNICIAN:',txx,y+13,6.5,GR,'bold');tx(d.f_tech||'',txx+21,y+13,7);
+  tx('CERTIFICATION NO.:',txx+60,y+13,6.5,GR,'bold');tx(d.f_cert_no||'',txx+95,y+13,7);
+  tx('RE-CERT DUE:',txx+110,y+13,6.5,GR,'bold');tx(d.f_recert||'',txx+136,y+13,7);
+  y+=20;hl(y);y+=4;
+  tx('4602 35th Street, Suite 100, Orlando, FL 32811  -  P: 407.830.7000  -  F: 407.830.7702  -  www.united-fire.com',PW/2,y,6,GR,'normal','center');
+
+  doc.save(filename);
+  toast('Saved: '+filename);
+}
+</script>
+</body>
+</html>
